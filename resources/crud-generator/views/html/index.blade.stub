@@ -1,0 +1,88 @@
+@extends('layouts.master')
+
+@section('content')    
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <span class="h3">%%crudNameCap%%</span>
+                    <a style="float:right;" href="{{ url('/%%routeGroup%%%%viewName%%/create') }}" class="btn btn-success btn-sm pull-right" title="Add New %%modelName%%">
+                        <i class="fa fa-plus" aria-hidden="true"></i> Adicionar novo %%modelName%%
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-hover">
+                        <table class="table" id="tabela_%%viewName%%">
+                            <thead>
+                                <tr>
+                                    <th>#</th>%%formHeadingHtml%%<th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($%%crudName%% as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    %%formBodyHtml%%
+                                    <td>
+                                        <a href="{{ url('/%%routeGroup%%%%viewName%%/' . $item->%%primaryKey%%) }}" title="Visualizar %%modelName%%"><button class="btn btn-outline-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i></button></a>
+                                        <a href="{{ url('/%%routeGroup%%%%viewName%%/' . $item->%%primaryKey%% . '/edit') }}" title="Editar %%modelName%%"><button class="btn btn-outline-primary btn-sm"><i class="fa fa-edit" aria-hidden="true"></i></button></a>
+
+                                        <form method="POST" action="{{ url('/%%routeGroup%%%%viewName%%' . '/' . $item->%%primaryKey%%) }}" accept-charset="UTF-8" style="display:inline">
+                                            {{ method_field('DELETE') }}
+                                            {{ csrf_field() }}
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Excluir %%modelName%%"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div> 
+@endsection
+
+@section('local_script')
+    <script>
+        $(document).ready(function () {
+            $("#tabela_%%viewName%%").DataTable({
+                "language": {
+                    "sSearch": "Search",
+                    "lengthMenu": "",
+                    "zeroRecords": "",
+                    "info": "Showing _PAGE_ de _PAGES_ paginas",
+                    "infoEmpty": "",
+                    "sLoadingRecords": "Carregando...",
+                    "oPaginate": {
+                        "sNext": "Next",
+                        "sPrevious": "Back",
+                        "sFirst": "First",
+                        "sLast": "Last"
+                    },
+                }
+            });
+        });
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            var form = this;
+
+            Swal.fire({
+                title: 'Deletar %%modelName%%?' ,
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim!',
+                cancelButtonText: 'Não',
+                }).then((result) => {
+                if (result.value) {
+                
+                    form.submit()
+                }
+            })
+        });
+    </script>
+@endsection
